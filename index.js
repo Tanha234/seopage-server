@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser'); // Import body-parser module
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' })); // Set the limit to a suitable value for your application
@@ -27,13 +27,22 @@ async function run() {
     const database = client.db("insertDB");
     const haiku = database.collection("haiku");
 
+    
+
     app.post('/upload', async (req, res) => {
-      // Handle your upload route here
-      const user = req.body;
-      console.log('new user', user);
-      const result = await haiku.insertOne(user);
-      res.json({ status: 'success' }); // Respond to the client
-    });
+        // Handle your upload route here
+        const user = req.body;
+        console.log('new user', user);
+        const result = await haiku.insertOne(user);
+        res.json({ status: 'success' }); // Respond to the client
+      });
+      
+
+    app.get('/upload',async(req,res)=>{
+        const cursor=haiku.find();
+        const result=await cursor.toArray();
+        res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
